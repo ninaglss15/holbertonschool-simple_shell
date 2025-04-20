@@ -10,6 +10,7 @@ void execute_command(char *cmd, char *prog_name)
 {
 	pid_t pid;
 	int status;
+
 	char **args;
 
 	args = tokenize_input(cmd);
@@ -20,8 +21,11 @@ void execute_command(char *cmd, char *prog_name)
 		return;
 	}
 
-	if (_strcmp(cmd, "exit") == 0)
+	if (_strcmp(args[0], "exit") == 0)
+	{
+		free_tokens(args);
 		exit(EXIT_SUCCESS);
+	}
 
 	pid = fork();
 	if (pid == -1)
@@ -37,21 +41,5 @@ void execute_command(char *cmd, char *prog_name)
 	{
 		wait(&status);
 		free_tokens(args);
-	}
-}
-
-/**
- * execute_in_child - execute command in child precess
- * @args: array of command and arguments
- * @prog_name: program name for error messages
- */
-
-void execute_in_child(char **args, char *prog_name)
-{
-	if (execve(args[0], args, environ) == -1)
-	{
-		fprintf(stderr, "%s: 1: %s: not found\n", prog_name, args[0]);
-		free_tokens(args);
-		exit(EXIT_FAILURE);
 	}
 }
