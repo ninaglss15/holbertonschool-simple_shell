@@ -1,9 +1,27 @@
 #include "shell.h"
 
 /**
- * main - entry point of the shell
- * @argc: number of arguments
- * @argv: array of arguments
+ * is_empty - check if string is empty or contains only whitespace
+ * @str: string to check
+ *
+ * Return: 1 if empty, 0 otherwise
+ */
+
+int is_empty(const char *str)
+{
+	while (*str)
+	{
+		if (*str != ' ' && *str != '\t' && *str != '\n')
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+/**
+ * main - entry point for simple shell
+ * @argc: argument count
+ * @argv: argument vector
  *
  * Return: 0 for success
  */
@@ -22,7 +40,9 @@ int main(int argc, char **argv)
 		if (line == NULL)
 			break;
 
-		execute_command(line, argv[0]);
+		if (!is_empty(line))
+			execute_command(line, argv[0]);
+
 		free(line);
 	}
 
