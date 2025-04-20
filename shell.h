@@ -18,5 +18,6 @@ void execute_command(char *cmd, char *prog_name);
 int _strlen(const char *s);
 int is_empty(const char *str);
 int _strcmp(const char *s1, const char *s2);
+char *find_command_path(const char *cmd);
 
 #endif /* SHELL_H */
