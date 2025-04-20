@@ -5,7 +5,7 @@
 * @cmd: user's command
 */
 
-void execute_command(char *cmd)
+void execute_command(char *cmd, char *prog_name)
 {
 	pid_t pid;
 	int status;
@@ -19,7 +19,7 @@ void execute_command(char *cmd)
 
 	if (pid == -1)
 	{
-		perror("fork");
+		perror(prog_name);
 		return;
 	}
 
@@ -27,7 +27,7 @@ void execute_command(char *cmd)
 	{
 		if (execve(cmd, argv, environ) == -1)
 		{
-			print_error(cmd);
+			perror(prog_name);
 			exit(EXIT_FAILURE);
 		}
 	}

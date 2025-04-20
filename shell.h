@@ -12,8 +12,7 @@ extern char **environ;
 
 void display_prompt(void);
 char *read_input(void);
-void execute_command(char *cmd);
-void print_error(char *cmd);
+void execute_command(char *cmd, char *prog_name);
 int _strlen(const char *s);
 
 #endif /* SHELL_H */
