@@ -10,17 +10,13 @@ void execute_command(char *cmd, char *prog_name)
 {
 	pid_t pid;
 	int status;
-	struct stat st;
 	char *argv[2];
+
+	if (_strcmp(cmd, "exit") == 0)
+		exit(EXIT_SUCCESS);
 
 	argv[0] = cmd;
 	argv[1] = NULL;
-
-	if (stat(cmd, &st) != 0 || !(st.st_mode & S_IXUSR))
-	{
-		fprintf(stderr, "%s: No such file or directory\n", prog_name);
-		return;
-	}
 
 	pid = fork();
 
