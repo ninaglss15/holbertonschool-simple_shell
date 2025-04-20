@@ -17,5 +17,6 @@ char *read_input(void);
 void execute_command(char *cmd, char *prog_name);
 int _strlen(const char *s);
 int is_empty(const char *str);
+int _strcmp(const char *s1, const char *s2);
 
 #endif /* SHELL_H */
