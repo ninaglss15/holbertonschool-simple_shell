@@ -20,8 +20,18 @@ char *read_input(void)
 		return (NULL);
 	}
 
-	if (nread > 0 && line[nread - 1] == '\n')
+	while (nread > 0 && (line[nread - 1] == '\n' || line[nread - 1] == ' '
+			|| line[nread - 1] == '\t' || line[nread - 1] == '\r'))
+	{
 		line[nread - 1] = '\0';
+		nread--;
+	}
+
+	if (nread == 0)
+	{
+		free(line);
+		return (NULL);
+	}
 
 	return (line);
 }
