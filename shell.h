@@ -33,4 +33,8 @@ void execute_in_child(char **args, char *prog_name);
 
 char *find_command_path(const char *cmd);
 
+int handle_env(char **args, char *line);
+
+int handle_builtin(char **args, char *line);
+
 #endif
