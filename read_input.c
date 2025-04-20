@@ -1,9 +1,9 @@
 #include "shell.h"
 
 /**
-* read_input - read line from stfin
+* read_input - read a line from standard input
 *
-* Return: pointer to the read line or NULL if EOF
+* Return: pointer to the read line, or NULL on EOF
 */
 
 char *read_input(void)
@@ -20,7 +20,7 @@ char *read_input(void)
 		return (NULL);
 	}
 
-	if (line[nread - 1] == '\n')
+	if (nread > 0 && line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
 
 	return (line);
