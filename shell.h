@@ -33,8 +33,4 @@ void execute_in_child(char **args, char *prog_name);
 
 char *find_command_path(const char *cmd);
 
-char *find_command_path(const char *cmd);
-
-
-
 #endif
