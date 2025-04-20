@@ -2,13 +2,17 @@
 
 /**
  * main - entry point of the shell
+ * @argc: number of arguments
+ * @argv: array of arguments
  *
  * Return: 0 for success
  */
 
-int main(void)
+int main(int argc, char **argv)
 {
 	char *line = NULL;
+
+	(void)argc;
 
 	while (1)
 	{
@@ -18,7 +22,7 @@ int main(void)
 		if (line == NULL)
 			break;
 
-		execute_command(line);
+		execute_command(line, argv[0]);
 		free(line);
 	}
 
