@@ -1,18 +1,23 @@
 #include "shell.h"
 
 /**
- * main - entry point for simple shell
- * @argc: argument count
- * @argv: argument vector
- *
- * Return: 0 for success
- */
+* main - entry point for simple shell
+* @argc: argument count
+* @argv: argument vector
+*
+* Return: 0 for success
+*/
 
 int main(int argc, char **argv)
-{
-	char *line = NULL;
 
-	(void)argc;
+{
+	 char *line = NULL;
+
+	 char **args;
+
+	 int line_number = 0;
+
+	 (void)argc;
 
 	while (1)
 	{
@@ -23,9 +28,17 @@ int main(int argc, char **argv)
 			break;
 
 		if (!is_empty(line))
-			execute_command(line, argv[0]);
+		{
+			line_number++;
+			args = tokenize_input(line);
+		if (args)
+		{
+			execute_command(args, argv, line_number, line);
+			free(args);
+		}
+		}
 
-		free(line);
+		 free(line);
 	}
 
 	return (0);

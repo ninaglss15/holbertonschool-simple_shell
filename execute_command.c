@@ -1,50 +1,52 @@
 #include "shell.h"
 
 /**
-* execute_command - execute a command
-* @cmd: command to execute
-* @prog_name: program name for error messages
-*/
+ * execute_command - Gère l'exécution d'une commande
+ * @args: tableau des arguments
+ * @argv: tableau d'arguments du programme principal
+ * @line_number: numéro de la ligne lue
+ * @line: ligne brute entrée par l'utilisateur
+ *
+ * Return: 1 pour continuer, sinon code de retour d'erreur
+ */
 
-void execute_command(char *cmd, char *prog_name)
+int execute_command(char **args, char **argv, int line_number, char *line)
 {
-	char **args, *cmd_path;
+	char *path;
 
-	args = tokenize_input(cmd);
-	if (!args || args[0] == NULL)
+	if (args[0] == NULL)
+		return (1);
+
+	if (handle_builtin(args, line))
+		return (0);
+
+	path = find_command_path(args[0]);
+	if (!path)
 	{
-		if (args)
-			free_tokens(args);
-		return;
+		fprintf(stderr, "%s: %d: %s: not found\n",
+			 argv[0], line_number, args[0]);
+		return (127);
 	}
 
-	if (handle_builtin(args, cmd))
+	if (access(path, X_OK) != 0)
 	{
-		free_tokens(args);
-		return;
+		fprintf(stderr, "%s: %d: %s: Permission denied\n",
+			 argv[0], line_number, args[0]);
+		free(path);
+		return (126);
 	}
 
-	cmd_path = find_command_path(args[0]);
-	if (!cmd_path)
-	{
-		fprintf(stderr, "%s: 1: %s: not found\n", prog_name, args[0]);
-		free_tokens(args);
-		return;
-	}
-
-	launch_process(cmd_path, args, prog_name);
-	free(cmd_path);
-	free_tokens(args);
+	return (launch_process(path, args));
 }
 
 /**
- * launch_process - fork et exécute la commande via execve
- * @cmd_path: chemin complet de la commande
+ * launch_process - Fork et exécute la commande avec execve
+ * @path: chemin de la commande
  * @args: tableau d'arguments
- * @prog_name: nom du programme pour les erreurs
+ *
+ * Return: 1 pour continuer la boucle principale
  */
-
-void launch_process(char *cmd_path, char **args, char *prog_name)
+int launch_process(char *path, char **args)
 {
 	pid_t pid;
 	int status;
@@ -52,18 +54,21 @@ void launch_process(char *cmd_path, char **args, char *prog_name)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror(prog_name);
-		return;
+		perror("fork");
+		free(path);
+		return (1);
 	}
 
 	if (pid == 0)
 	{
-		execve(cmd_path, args, environ);
-		perror(prog_name);
+		execve(path, args, environ);
+		perror("execve");
+		free(path);
 		exit(EXIT_FAILURE);
 	}
 	else
-	{
 		wait(&status);
-	}
+
+	free(path);
+	return (1);
 }
