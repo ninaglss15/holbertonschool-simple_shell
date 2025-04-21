@@ -115,44 +115,45 @@ hsh main.c shell.c test_ls_2
 julien@ubuntu:/#
 ```
 
-## Flowchart
-## Man Page
+## Flowchart :
+## Man Page :
 
 ## Explanation of files
 
-###main.c
+### main.c
 Entry point of the shell. Contains the main loop that handles user input.
 
-###path.c
+### path.c
 This file contains functions responsible for locating the full path of a command using the PATH environment variable.
 
-###aux.c
+### aux.c
 This file contains helper functions used throughout the shell project to keep the code clean and modular.
 
-###display_prompt.c
+### display_prompt.c
 This file contains the function responsible for displaying the shell prompt to the user.
 
-###execute_command.c
+### execute_command.c
 This file contains the core logic to process and execute commands entered by the user.
 
-###execute_in_child.c
+### execute_in_child.c
 This file handles the execution of external commands in a child process.
 
-###handle_builtin.c
+### handle_builtin.c
 This file manages built-in commands supported by the shell, such as exit and env.
 
-###read_input.c
+### read_input.c
 This file handles user input reading from the terminal.
 
-###tokenize.c
+### tokenize.c
 This file is responsible for splitting user input into separate tokens (command and arguments).
 
-##Compilation
+
+## Compilation
 To compile simple shell use:
 ```sh
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
-## Code Quality & Memory Management
+## Code Quality & Memory Management :
 
 ### Memory Leak Testing with Valgrind
 
@@ -162,6 +163,15 @@ To ensure that your shell does not have memory leaks, use **Valgrind** for memor
 
 ```bash
 valgrind ./my_shell 
+```
+### Code Quality with Betty
+
+Betty is a style linter for C code used at Holberton to enforce code readability and consistency.
+
+**How to test:**
+
+```bash
+betty + name of file
 ```
 
 ## Authors
