@@ -17,6 +17,7 @@ extern char **environ;
 
 void display_prompt(void);
 char *read_input(void);
+void execute_command(char *cmd, char *prog_name);
 
 int _strlen(const char *s);
 
@@ -36,9 +37,6 @@ int handle_env(char **args, char *line);
 
 int handle_builtin(char **args, char *line);
 
-int execute_command(char **args, char **argv, int line_number, char *line);
-
-int launch_process(char *path, char **args);
-
+void launch_process(char *cmd_path, char **args, char *prog_name);
 
 #endif
