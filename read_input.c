@@ -13,26 +13,14 @@ char *read_input(void)
 	ssize_t nread;
 
 	nread = getline(&line, &len, stdin);
-
 	if (nread == -1)
 	{
 		free(line);
 		return (NULL);
 	}
 
-	while (nread > 0 && (line[nread - 1] == '\n' || line[nread - 1] == ' '
-			|| line[nread - 1] == '\t' || line[nread - 1] == '\r'))
-	{
+	if (nread > 0 && line[nread - 1] == '\n')
 		line[nread - 1] = '\0';
-		nread--;
-	}
-
-	if (nread == 0)
-	{
-		free(line);
-		return (NULL);
-	}
 
 	return (line);
 }
-

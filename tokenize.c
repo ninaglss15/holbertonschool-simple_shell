@@ -9,16 +9,16 @@
 
 char **tokenize_input(char *line)
 {
-	char **tokens = malloc(sizeof(char *) * MAX_ARGS);
-	char *token;
+	char **tokens = NULL;
+	char *token = NULL;
 	int i = 0;
 
-	if (!tokens)
+	if (!line)
 		return (NULL);
 
-	while (*line && (*line == ' ' || *line == '\t'
-			|| *line == '\n' || *line == '\r'))
-		line++;
+	tokens = malloc(sizeof(char *) * MAX_ARGS);
+	if (!tokens)
+		return (NULL);
 
 	token = strtok(line, " \t\n\r");
 	while (token && i < MAX_ARGS - 1)
@@ -44,7 +44,7 @@ char **tokenize_input(char *line)
 
 void free_tokens(char **tokens)
 {
-	int i;
+	int i = 0;
 
 	if (!tokens)
 		return;
@@ -54,4 +54,3 @@ void free_tokens(char **tokens)
 
 	free(tokens);
 }
-

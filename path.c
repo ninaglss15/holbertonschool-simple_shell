@@ -1,6 +1,4 @@
 #include "shell.h"
-#include <string.h>
-#include <sys/stat.h>
 
 /**
  * find_command_path - cherche le chemin complet d'une commande dans le PATH
@@ -8,19 +6,19 @@
  *
  * Return: chemin complet si trouvé NULL sinon (à libérer)
  */
+
 char *find_command_path(const char *cmd)
 {
-	char *path, *path_copy, *dir;
-	char *full_path;
+	char *path, *path_copy, *path_token, *file_path;
 	struct stat st;
-	int len;
+	int cmd_len, dir_len;
 
-	if (!cmd || cmd[0] == '\0')
+	if (!cmd)
 		return (NULL);
 
-	if (strchr(cmd, '/'))
+	if (strchr(cmd, '/') != NULL)
 	{
-		if (stat(cmd, &st) == 0)
+		if (stat(cmd, &st) == 0 && (st.st_mode & S_IXUSR))
 			return (strdup(cmd));
 		else
 			return (NULL);
@@ -34,26 +32,29 @@ char *find_command_path(const char *cmd)
 	if (!path_copy)
 		return (NULL);
 
-	dir = strtok(path_copy, ":");
-	while (dir)
+	cmd_len = strlen(cmd);
+	path_token = strtok(path_copy, ":");
+	while (path_token)
 	{
-		len = _strlen(dir) + _strlen(cmd) + 2;
-		full_path = malloc(len);
-		if (!full_path)
+		dir_len = strlen(path_token);
+		file_path = malloc(dir_len + cmd_len + 2);
+		if (!file_path)
 		{
 			free(path_copy);
 			return (NULL);
 		}
-		sprintf(full_path, "%s/%s", dir, cmd);
+		strcpy(file_path, path_token);
+		strcat(file_path, "/");
+		strcat(file_path, cmd);
 
-		if (stat(full_path, &st) == 0)
+		if (stat(file_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
-			return (full_path);
+			return (file_path);
 		}
 
-		free(full_path);
-		dir = strtok(NULL, ":");
+		free(file_path);
+		path_token = strtok(NULL, ":");
 	}
 
 	free(path_copy);
