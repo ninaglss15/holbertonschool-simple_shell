@@ -11,6 +11,7 @@
 int main(int argc, char **argv)
 {
 	char *line = NULL;
+	char **args = NULL;
 
 	(void)argc;
 
@@ -23,7 +24,14 @@ int main(int argc, char **argv)
 			break;
 
 		if (!is_empty(line))
-			execute_command(line, argv[0]);
+		{
+			args = tokenize_input(line);
+			if (args != NULL && args[0] != NULL)
+			{
+				if (!handle_builtin(args, line))
+					execute_command(args, argv[0]);
+			}
+		}
 
 		free(line);
 	}

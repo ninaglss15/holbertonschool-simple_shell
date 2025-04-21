@@ -24,3 +24,39 @@ int is_empty(const char *str)
 	}
 	return (1);
 }
+
+/**
+ * copy_args - creates a copy of an array of strings
+ * @original: the original array of strings to copy
+ *
+ * Return: a pointer to the newly allocated copy of the array
+ */
+
+char **copy_args(char **original)
+{
+	int count = 0;
+	char **copy;
+	int i;
+
+	if (original == NULL)
+		return (NULL);
+
+	while (original[count])
+		count++;
+
+	copy = malloc((count + 1) * sizeof(char *));
+	if (copy == NULL)
+		return (NULL);
+
+	for (i = 0; i < count; i++)
+	{
+		copy[i] = strdup(original[i]);
+		if (copy[i] == NULL)
+		{
+			free_tokens(copy);
+			return (NULL);
+		}
+	}
+	copy[count] = NULL;
+	return (copy);
+}

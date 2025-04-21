@@ -10,42 +10,33 @@
 
 int handle_builtin(char **args, char *line)
 {
+	(void)line;
+
 	if (args == NULL || args[0] == NULL)
 		return (0);
 
 	if (strcmp(args[0], "exit") == 0)
-	{
-		free_tokens(args);
-		free(line);
-		exit(0);
-	}
-	else if (strcmp(args[0], "env") == 0)
-		return (handle_env(args, line));
+		exit(EXIT_SUCCESS);
 
 	return (0);
 }
 
-
 /**
- * handle_env - handles the "env" command to print environment variables
- * @args: array of words (e.g., args[0] = "env", args[1] = NULL, etc.)
- * @line: complete line (unused in this function)
+ * handle_env - Prints the environment variables
+ * @args: Unused parameter
+ * @line: Unused parameter
  *
- * Return: 1 if the "env" command is executed, 0 otherwise
+ * Return: 1 after printing the environment variables
  */
 
 int handle_env(char **args, char *line)
 {
-	int i = 0;
-
+	int i;
 	(void)line;
+	(void)args;
 
-	while (environ[i])
-	{
+	for (i = 0; environ[i]; i++)
 		printf("%s\n", environ[i]);
-		i++;
-	}
 
-	free_tokens(args);
 	return (1);
 }

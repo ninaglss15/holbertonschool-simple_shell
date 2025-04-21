@@ -9,47 +9,54 @@
 
 char **tokenize_input(char *line)
 {
-	char **tokens = NULL;
-	char *token = NULL;
+	char **tokens = malloc(sizeof(char *) * MAX_ARGS);
+	char *line_copy;
+	char *token;
 	int i = 0;
 
-	if (!line)
+	if (!line || strlen(line) == 0)
 		return (NULL);
 
-	tokens = malloc(sizeof(char *) * MAX_ARGS);
-	if (!tokens)
-		return (NULL);
+	line_copy = strdup(line);
 
-	token = strtok(line, " \t\n\r\a");
+	if (!tokens || !line_copy)
+	{
+		free(tokens);
+		free(line_copy);
+		return (NULL);
+	}
+
+	token = strtok(line_copy, " \t\n\r\a");
 	while (token && i < MAX_ARGS - 1)
 	{
 		tokens[i] = strdup(token);
-		if (!tokens[i])
+		if (tokens[i] == NULL)
 		{
 			free_tokens(tokens);
+			free(line_copy);
 			return (NULL);
 		}
-		token = strtok(NULL, " \t\n\r");
+		token = strtok(NULL, " \t\n\r\a");
 		i++;
 	}
 	tokens[i] = NULL;
-
+	free(line_copy);
 	return (tokens);
 }
 
 /**
-* free_tokens - free memory allocated for tokens
+* free_tokens - frees memory allocated for an array of tokens
 * @tokens: array of tokens to free
 */
 
 void free_tokens(char **tokens)
 {
-	int i = 0;
+	int i;
 
 	if (!tokens)
 		return;
 
-	for (i = 0; tokens[i]; i++)
+	for (i = 0; tokens[i] != NULL; i++)
 		free(tokens[i]);
 
 	free(tokens);
