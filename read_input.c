@@ -35,3 +35,4 @@ char *read_input(void)
 
 	return (line);
 }
+

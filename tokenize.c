@@ -23,7 +23,12 @@ char **tokenize_input(char *line)
 	token = strtok(line, " \t\n\r");
 	while (token && i < MAX_ARGS - 1)
 	{
-		tokens[i] = token;
+		tokens[i] = strdup(token);
+		if (!tokens[i])
+		{
+			free_tokens(tokens);
+			return (NULL);
+		}
 		token = strtok(NULL, " \t\n\r");
 		i++;
 	}
@@ -39,46 +44,14 @@ char **tokenize_input(char *line)
 
 void free_tokens(char **tokens)
 {
+	int i;
+
+	if (!tokens)
+		return;
+
+	for (i = 0; tokens[i]; i++)
+		free(tokens[i]);
+
 	free(tokens);
 }
 
-/**
-* split_line - splits a line into an array or arguments
-* @line: the input line
-*
-* Return: array of arguments (NULL-terminated)
-*/
-
-char **split_line(char *line)
-{
-	size_t bufsize = 64, i = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
-
-	char *token;
-
-	if (!tokens)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-
-	token = strtok(line, " \t\r\n");
-	while (token != NULL)
-	{
-		tokens[i++] = token;
-
-		if (i >= bufsize)
-		{
-			bufsize *= 2;
-			tokens = realloc(tokens, bufsize * sizeof(char*));
-			if (!tokens)
-			{
-				perror("realloc");
-				exit(EXIT_FAILURE);
-			}
-		}
-		token = strtok(NULL, " \t\r\n");
-	}
-	tokens[i] = NULL;
-	return (tokens);
-}
