@@ -9,12 +9,11 @@
 void execute_command(char *cmd, char *prog_name)
 {
 	pid_t pid;
-	int status;
 	char **args;
-	char *cmd_path;
+	char *cmd_path = NULL;
 
 	args = tokenize_input(cmd);
-	if (!args || args[0] == NULL)
+	if (args == NULL || args[0] == NULL)
 	{
 		if (args)
 			free_tokens(args);
@@ -24,58 +23,25 @@ void execute_command(char *cmd, char *prog_name)
 	if (handle_builtin(args, cmd))
 		return;
 
-	cmd_path = check_command(args, prog_name);
+	cmd_path = find_command_path(args[0]);
 	if (!cmd_path)
+	{
+		handle_command_error(prog_name, args);
 		return;
+	}
 
 	pid = fork();
 	if (pid == -1)
 	{
-		handle_fork_error(cmd_path, args, prog_name);
+		handle_fork_error(prog_name, cmd_path, args);
 		return;
 	}
 
 	if (pid == 0)
 		execute_in_child(cmd_path, args, prog_name);
 	else
-	{
-		waitpid(pid, &status, 0);
-		free(cmd_path);
-		free_tokens(args);
-	}
+		handle_parent_process(pid, cmd_path, args);
 }
-
-/**
- * launch_process - fork et exécute la commande via execve
- * @cmd_path: chemin complet de la commande
- * @args: tableau d'arguments
- * @prog_name: nom du programme pour les erreurs
- */
-
-void launch_process(char *cmd_path, char **args, char *prog_name)
-{
-	pid_t pid;
-	int status;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		perror(prog_name);
-		return;
-	}
-
-	if (pid == 0)
-	{
-		execve(cmd_path, args, environ);
-		perror(prog_name);
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-	}
-}
-
 
 
 /**

@@ -20,7 +20,7 @@ char **tokenize_input(char *line)
 	if (!tokens)
 		return (NULL);
 
-	token = strtok(line, " \t\n\r");
+	token = strtok(line, " \t\n\r\a");
 	while (token && i < MAX_ARGS - 1)
 	{
 		tokens[i] = strdup(token);

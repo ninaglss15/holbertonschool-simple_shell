@@ -1,62 +1,85 @@
 #include "shell.h"
 
 /**
- * find_command_path - cherche le chemin complet d'une commande dans le PATH
- * @cmd: commande à rechercher
- *
- * Return: chemin complet si trouvé NULL sinon (à libérer)
- */
+* check_executable - checks if a given path is an executable file
+* @path: file path to check
+*
+* Return: duplicate of the path if it is executable, NULL otherwise
+*/
+
+char *check_executable(const char *path)
+{
+	struct stat buffer;
+
+	if (stat(path, &buffer) == 0)
+	{
+		if (S_ISREG(buffer.st_mode) && (buffer.st_mode & S_IXUSR))
+			return (strdup(path));
+	}
+	return (NULL);
+}
+
+/**
+* search_in_path - searches for a command in the given PATH
+* @cmd: command to search for
+* @path_copy: copy of the PATH environment variable
+*
+* Return: full path of the command if found, NULL otherwise
+*/
+char *search_in_path(const char *cmd, char *path_copy)
+{
+	char *path_token = strtok(path_copy, ":");
+	char *full_path = NULL;
+	char *result;
+
+	while (path_token)
+	{
+		full_path = malloc(strlen(path_token) + strlen(cmd) + 2);
+		sprintf(full_path, "%s/%s", path_token, cmd);
+
+		result = check_executable(full_path);
+
+		if (result)
+		{
+			free(path_copy);
+			return (full_path);
+		}
+
+		free(full_path);
+		path_token = strtok(NULL, ":");
+	}
+	return (NULL);
+}
+
+/**
+* find_command_path - searches the full path of a command in the PATH
+* @cmd: Command to search for
+*
+* Return: full path if found, NULL otherwise (to be freed)
+*/
 
 char *find_command_path(const char *cmd)
 {
-	char *path, *path_copy, *path_token, *file_path;
-	struct stat st;
-	int cmd_len, dir_len;
+	char *path;
+	char *path_copy;
+	char *result;
 
-	if (!cmd)
+	if (cmd == NULL || cmd == NULL)
 		return (NULL);
 
-	if (strchr(cmd, '/') != NULL)
-	{
-		if (stat(cmd, &st) == 0 && (st.st_mode & S_IXUSR))
-			return (strdup(cmd));
-		else
-			return (NULL);
-	}
+	if (strchr(cmd, '/'))
+		return (check_executable(cmd));
 
 	path = getenv("PATH");
-	if (!path)
+	if (path == NULL)
 		return (NULL);
 
 	path_copy = strdup(path);
-	if (!path_copy)
+	if (path_copy == NULL)
 		return (NULL);
 
-	cmd_len = strlen(cmd);
-	path_token = strtok(path_copy, ":");
-	while (path_token)
-	{
-		dir_len = strlen(path_token);
-		file_path = malloc(dir_len + cmd_len + 2);
-		if (!file_path)
-		{
-			free(path_copy);
-			return (NULL);
-		}
-		strcpy(file_path, path_token);
-		strcat(file_path, "/");
-		strcat(file_path, cmd);
-
-		if (stat(file_path, &st) == 0 && (st.st_mode & S_IXUSR))
-		{
-			free(path_copy);
-			return (file_path);
-		}
-
-		free(file_path);
-		path_token = strtok(NULL, ":");
-	}
+	result = search_in_path(cmd, path_copy);
 
 	free(path_copy);
-	return (NULL);
+	return (result);
 }
