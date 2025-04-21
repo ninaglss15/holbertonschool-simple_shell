@@ -1,1 +1,36 @@
-.TH HSH 1 "April 2025" "1.0" "Simple Shell Manual"
+.TH SIMPLE_SHELL 1 "21 avril 2025" "1.0" "Holberton Simple Shell"
+.SH NAME
+simple_shell \- simple UNIX command interpreter
+
+.SH SYNOPSIS
+.B ./hsh
+
+.SH DESCRIPTION
+A minimal shell written in C. It reads user input, parses it, and executes commands using the PATH. Works in interactive and non-interactive mode.
+
+.SH BUILTINS
+.TP
+.B exit
+Exit the shell.
+.TP
+.B env
+Print the current environment.
+
+.SH EXAMPLES
+Start shell:
+.EX
+$ ./hsh
+.EX
+
+Run a command:
+.EX
+$ ls -la
+.EX
+
+Exit:
+.EX
+$ exit
+.EX
+
+.SH AUTHOR
+Nina Galasso and Myriam Mezhoud
