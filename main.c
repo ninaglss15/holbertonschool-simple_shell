@@ -10,31 +10,23 @@
 
 int main(int argc, char **argv)
 {
-	char *line = NULL;
-	char **args = NULL;
+        char *line = NULL;
 
-	(void)argc;
+        (void)argc;
 
-	while (1)
-	{
-		display_prompt();
+        while (1)
+        {
+                display_prompt();
 
-		line = read_input();
-		if (line == NULL)
-			break;
+                line = read_input();
+                if (line == NULL)
+                        break;
 
-		if (!is_empty(line))
-		{
-			args = tokenize_input(line);
-			if (args != NULL && args[0] != NULL)
-			{
-				if (!handle_builtin(args, line))
-					execute_command(args, argv[0]);
-			}
-		}
+                if (!is_empty(line))
+                        execute_command(line, argv[0]);
 
-		free(line);
-	}
+                free(line);
+        }
 
-	return (0);
+        return (0);
 }

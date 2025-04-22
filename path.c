@@ -1,18 +1,32 @@
 #include "shell.h"
-
+ 
 /**
-* get_command_path - find pull path of command in PATH
-* @command: command to search
+* find_command_path - cherche le chemin complet d'une commande dans le PATH
+* @cmd: commande à rechercher
 *
-* Return: full path if found, NULL otherwise
+* Return: chemin complet si trouvé NULL sinon (à libérer)
 */
 
-char *get_command_path(char *command)
+char *find_command_path(const char *cmd)
 {
-	char *path = getenv("PATH");
-	char *path_copy, *dir, *full_path;
+	char *path, *path_copy, *dir;
+	char *full_path;
+	struct stat st;
+	int len;
 
-	if (!path || command[0] == '/')
+	if (!cmd || cmd[0] == '\0')
+		return (NULL);
+
+	if (strchr(cmd, '/'))
+	{
+		if (stat(cmd, &st) == 0)
+			return (strdup(cmd));
+		else
+			return (NULL);
+	}
+
+	path = getenv("PATH");
+	if (!path)
 		return (NULL);
 
 	path_copy = strdup(path);
@@ -22,15 +36,16 @@ char *get_command_path(char *command)
 	dir = strtok(path_copy, ":");
 	while (dir)
 	{
-		full_path = malloc(strlen(dir) + strlen(command) + 2);
+		len = _strlen(dir) + _strlen(cmd) + 2;
+		full_path = malloc(len);
 		if (!full_path)
 		{
 			free(path_copy);
 			return (NULL);
 		}
+		sprintf(full_path, "%s/%s", dir, cmd);
 
-		sprintf(full_path, "%s/%s", dir, command);
-		if (access(full_path, X_OK) == 0)
+		if (stat(full_path, &st) == 0)
 		{
 			free(path_copy);
 			return (full_path);

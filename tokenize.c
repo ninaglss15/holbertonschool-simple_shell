@@ -9,55 +9,75 @@
 
 char **tokenize_input(char *line)
 {
-	char **tokens = malloc(sizeof(char *) * MAX_ARGS);
-	char *line_copy;
-	char *token;
-	int i = 0;
+        char **tokens = malloc(sizeof(char *) * MAX_ARGS);
+        char *token;
+        int i = 0;
 
-	if (!line || strlen(line) == 0)
-		return (NULL);
+        if (!tokens)
+                return (NULL);
 
-	line_copy = strdup(line);
+        while (*line && (*line == ' ' || *line == '\t'
+                        || *line == '\n' || *line == '\r'))
+                line++;
 
-	if (!tokens || !line_copy)
-	{
-		free(tokens);
-		free(line_copy);
-		return (NULL);
-	}
+        token = strtok(line, " \t\n\r");
+        while (token && i < MAX_ARGS - 1)
+        {
+                tokens[i] = token;
+                token = strtok(NULL, " \t\n\r");
+                i++;
+        }
+        tokens[i] = NULL;
 
-	token = strtok(line_copy, " \t\n\r\a");
-	while (token && i < MAX_ARGS - 1)
-	{
-		tokens[i] = strdup(token);
-		if (tokens[i] == NULL)
-		{
-			free_tokens(tokens);
-			free(line_copy);
-			return (NULL);
-		}
-		token = strtok(NULL, " \t\n\r\a");
-		i++;
-	}
-	tokens[i] = NULL;
-	free(line_copy);
-	return (tokens);
+        return (tokens);
 }
 
 /**
-* free_tokens - frees memory allocated for an array of tokens
+* free_tokens - free memory allocated for tokens
 * @tokens: array of tokens to free
 */
 
 void free_tokens(char **tokens)
 {
-	int i;
+        free(tokens);
+}
 
-	if (!tokens)
-		return;
+/**
+* split_line - splits a line into an array or arguments
+* @line: the input line
+*
+* Return: array of arguments (NULL-terminated)
+*/
 
-	for (i = 0; tokens[i] != NULL; i++)
-		free(tokens[i]);
+char **split_line(char *line)
+{
+        size_t bufsize = 64, i = 0;
+        char **tokens = malloc(bufsize * sizeof(char *));
+        char *token;
 
-	free(tokens);
+        if (!tokens)
+        {
+                perror("malloc");
+                exit(EXIT_FAILURE);
+        }
+
+        token = strtok(line, " \t\r\n");
+        while (token != NULL)
+        {
+                tokens[i++] = token;
+
+                if (i >= bufsize)
+                {
+                        bufsize *= 2;
+                        tokens = realloc(tokens, bufsize * sizeof(char*));
+                        if (!tokens)
+                        {
+                                perror("realloc");
+                                exit(EXIT_FAILURE);
+                        }
+                }
+                token = strtok(NULL, " \t\r\n");
+        }
+        tokens[i] = NULL;
+        return (tokens);
 }

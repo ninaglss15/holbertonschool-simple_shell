@@ -1,69 +1,67 @@
 #include "shell.h"
 
 /**
-* validate_and_resolve_command - Check command validity and resolve path
-* @args: Array of command and arguments
-* @prog_name: Program name for error messages
-* Return: Resolved command path or NULL
-*/
-
-static char *validate_and_resolve_command(char **args, char *prog_name)
-{
-	struct stat st;
-	char *path;
-
-	if (args[0][0] == '/' || args[0][0] == '.')
-	{
-		if (stat(args[0], &st) == 0 && S_ISREG(st.st_mode) && (st.st_mode & S_IXUSR))
-			return (strdup(args[0]));
-	}
-	else
-	{
-		path = get_command_path(args[0]);
-
-		if (path)
-			return (path);
-	}
-
-	fprintf(stderr, "%s: 1: %s: not found\n", prog_name, args[0]);
-	return (NULL);
-}
-
-
-/**
-* execute_command - main command execution flow
-* @args: array of command and arguments
+* execute_command - execute a command
+* @cmd: command to execute
 * @prog_name: program name for error messages
 */
 
-void execute_command(char **args, char *prog_name)
+void execute_command(char *cmd, char *prog_name)
 {
-	char *resolved_cmd;
-	pid_t pid;
-	char **args_copy;
+        pid_t pid;
+        int status;
+        char *argv[2];
+	char *path_cmd;
 
-	if (!args || !args[0])
-		return;
+        if (_strcmp(cmd, "exit") == 0)
+                exit(EXIT_SUCCESS);
 
-	resolved_cmd = validate_and_resolve_command(args, prog_name);
-	if (!resolved_cmd)
-		return;
-
-	args_copy = copy_args(args);
-	free(args_copy[0]);
-	args_copy[0] = resolved_cmd;
-
-	pid = fork();
-
-	if (pid == 0)
+	path_cmd = find_command_path(cmd);
+	if (!path_cmd)
 	{
-		execve(args_copy[0], args_copy, environ);
-		perror(prog_name);
-		_exit(EXIT_FAILURE);
+		write(STDERR_FILENO, prog_name, _strlen(prog_name));
+		write(STDERR_FILENO, ": command not found\n", 21);
+		return;
 	}
-	else
+	argv[0] = path_cmd;
+	argv[1] = NULL;
+
+        pid = fork();
+	if (pid == -1)
+        {
+                perror(prog_name);
+                free(path_cmd);
+                return;
+        }
+
+        if (pid == 0)
 	{
-		wait(NULL);
-		free_tokens(args_copy);
+		if (execute_in_child(path_cmd, argv, environ) == -1);
+		{
+			perror(prog_name);
+			free(path_cmd);
+			exit(EXIT_FAILURE);
+		}
 	}
+        else
+        {
+                wait(&status);
+                free(path_cmd);
+        }
+}
+
+/**
+ * execute_in_child - execute command in child precess
+ * @args: array of command and arguments
+ * @prog_name: program name for error messages
+ */
+
+void execute_in_child(char **args, char *prog_name)
+{
+        if (execve(args[0], args, environ) == -1)
+        {
+                fprintf(stderr, "%s: 1: %s: not found\n", prog_name, args[0]);
+                free_tokens(args);
+                exit(EXIT_FAILURE);
+        }
 }

@@ -1,8 +1,8 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -14,22 +14,15 @@
 
 extern char **environ;
 
-/* Prompt and input functions */
 void display_prompt(void);
 char *read_input(void);
+void execute_command(char *cmd, char *prog_name);
+int _strlen(const char *s);
 int is_empty(const char *str);
-char **copy_args(char **original);
-
-/* Command parasing */
+int _strcmp(const char *s1, const char *s2);
 char **tokenize_input(char *line);
 void free_tokens(char **tokens);
-
-/* Path resolution */
-void execute_command(char **args, char *prog_name);
-char *get_command_path(char *command);
-
-/* Built-in commands */
-int handle_builtin(char **args, char *line);
-int handle_env(char **args, char *line);
+void execute_in_child(char **args, char *prog_name);
+char *find_command_path(const char *cmd);
 
 #endif /* SHELL_H */
