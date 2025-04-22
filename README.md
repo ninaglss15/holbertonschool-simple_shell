@@ -160,38 +160,38 @@ void display_prompt(void);
 char *read_input(void);
 
 ## Executes the given command
-## @cmd: command string to execute
-## @prog_name: program name, used for error messages
+### cmd: command string to execute
+### prog_name: program name, used for error messages
 void execute_command(char *cmd, char *prog_name);
 
 ## Calculates the length of a string
-## @s: string to measure
+### s: string to measure
 ## Return: length of the string
 int _strlen(const char *s);
 
 ## Checks if a string is empty or contains only whitespace
-## @str: string to check
+### str: string to check
 ## Return: 1 if empty or only spaces, 0 otherwise
 int is_empty(const char *str);
 
 ## Compares two strings
-## @s1: first string
-## @s2: second string
+### s1: first string
+### s2: second string
 ## Return: 0 if equal, negative or positive integer otherwise
 int _strcmp(const char *s1, const char *s2);
 
 ## Splits a command line into tokens (words)
-## @line: input line to tokenize
+### line: input line to tokenize
 ## Return: array of strings (tokens), ending with NULL
 char **tokenize_input(char *line);
 
 ## Frees the memory allocated for the token array
-## @tokens: array to free
+### tokens: array to free
 void free_tokens(char **tokens);
 
 ## Executes a command in a child process using execve
-## @args: array of arguments (command + options)
-## @prog_name: program name for error display
+### args: array of arguments (command + options)
+### prog_name: program name for error display
 void execute_in_child(char **args, char *prog_name);
 
 ## Finds the full path of a command by checking directories in PATH
@@ -200,14 +200,14 @@ void execute_in_child(char **args, char *prog_name);
 char *find_command_path(const char *cmd);
 
 ## Handles the "env" built-in command
-## @args: argument array
-## @line: command line (to free if needed)
+### args: argument array
+### line: command line (to free if needed)
 ## Return: 1 if "env" was handled, 0 otherwise
 int handle_env(char **args, char *line);
 
 ## Handles built-in commands like "exit"
-## @args: argument array
-## @line: command line (to free if needed)
+### args: argument array
+### line: command line (to free if needed)
 ## Return: 1 if a built-in was executed, 0 otherwise
 int handle_builtin(char **args, char *line);
 
