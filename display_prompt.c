@@ -6,6 +6,6 @@
 
 void display_prompt(void)
 {
-	if (isatty(STDIN_FILENO))
-		write(STDOUT_FILENO, "#cisfun$ ", 9);
+	if (isatty(STDIN_FILENO)) /* entrée standard (clav) interactif */
+		write(STDOUT_FILENO, "#cisfun$ ", 9); /* écrit prompt ds sortie standard */
 }

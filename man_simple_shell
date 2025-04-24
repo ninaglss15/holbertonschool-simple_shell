@@ -18,30 +18,39 @@ Exit the shell. If called with an optional numeric argument, it returns that val
 Display the current environment variables.
 
 .SH USAGE
-In interactive mode, the shell prompts for input and executes commands.
-In non-interactive mode, commands are read from standard input or a file.
+The shell supports:
+.IP \- 2
+Interactive mode: Displays a prompt and waits for user input.
+.IP \- 2
+Non-interactive mode: Reads commands from a file or standard input.
 
 .SH EXAMPLES
-Start the shell:
-.PP
+Interactive mode:
 .EX
-$ ./hsh
+$ ./simple_shell
+#cisfun$ ls -l
+total 8
+-rw-r--r-- 1 user user 1234 Apr 24 2025 file1
+-rw-r--r-- 1 user user 5678 Apr 24 2025 file2
+#cisfun$ exit
+$
 .EE
 
-.SH
-Run a command:
-.PP
+Non-interactive mode:
 .EX
-$ ls -la
+$ echo "ls -l" | ./simple_shell
+total 8
+-rw-r--r-- 1 user user 1234 Apr 24 2025 file1
+-rw-r--r-- 1 user user 5678 Apr 24 2025 file2
+$
 .EE
 
-.SH
-Exit the shell:
-.PP
-.EX
-$ exit
-.EE
+.SH RETURN VALUE
+.B simple_shell
+returns 0 on success, or an error code if a failure occurs.
+
+.SH BUGS
+No known bugs at this time.
 
 .SH AUTHOR
-Nina Galasso and Myriam Mezhoud
-
+Ninaglss and Mylliah
