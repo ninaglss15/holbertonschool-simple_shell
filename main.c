@@ -7,7 +7,6 @@
  *
  * Return: 0 for success
  */
-
 int main(int argc, char **argv)
 {
 	char *line = NULL; /* ptr NULL vers ligne - getline puisse alloué memoire */
