@@ -1,6 +1,4 @@
 #include "shell.h"
-#include <string.h>
-#include <sys/stat.h>
 
 /**
  * find_command_path - cherche le chemin complet d'une commande dans le PATH
@@ -37,7 +35,7 @@ char *find_command_path(const char *cmd)
 	dir = strtok(path_copy, ":");
 	while (dir)
 	{
-		len = _strlen(dir) + _strlen(cmd) + 2;
+		len = strlen(dir) + strlen(cmd) + 2;
 		full_path = malloc(len);
 		if (!full_path)
 		{

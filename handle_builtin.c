@@ -1,7 +1,4 @@
 #include "shell.h"
-#include <stdlib.h>  /* pour exit */
-#include <stdio.h>   /* pour printf */
-#include <string.h>  /* pour strcmp */
 
 /**
  * handle_builtin - gère les commandes internes comme "exit" et "env"
@@ -25,30 +22,6 @@ int handle_builtin(char **args, char *line)
 	}
 
 	if (strcmp(args[0], "env") == 0)
-	{
-		for (i = 0; environ[i] != NULL; i++)
-			printf("%s\n", environ[i]);
-		return (1);
-	}
-
-	return (0);
-}
-
-
-/**
- * handle_env - handles the "env" command to print environment variables
- * @args: array of words (e.g., args[0] = "env", args[1] = NULL, etc.)
- * @line: complete line (unused in this function)
- *
- * Return: 1 if the "env" command is executed, 0 otherwise
- */
-int handle_env(char **args, char *line)
-{
-	int i;
-
-	(void)line;
-
-	if (args[0] && strcmp(args[0], "env") == 0)
 	{
 		for (i = 0; environ[i] != NULL; i++)
 			printf("%s\n", environ[i]);

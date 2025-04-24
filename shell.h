@@ -18,25 +18,11 @@ extern char **environ;
 void display_prompt(void);
 char *read_input(void);
 void execute_command(char *cmd, char *prog_name);
-
-int _strlen(const char *s);
-
 int is_empty(const char *str);
-
-int _strcmp(const char *s1, const char *s2);
-
 char **tokenize_input(char *line);
-
 void free_tokens(char **tokens);
-
 void execute_in_child(char **args, char *prog_name);
-
 char *find_command_path(const char *cmd);
-
-int handle_env(char **args, char *line);
-
 int handle_builtin(char **args, char *line);
-
-void launch_process(char *cmd_path, char **args, char *prog_name);
 
 #endif

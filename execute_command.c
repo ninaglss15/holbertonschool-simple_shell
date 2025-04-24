@@ -49,34 +49,3 @@ void execute_command(char *cmd, char *prog_name)
 		free_tokens(args);
 	}
 }
-
-/**
- * launch_process - fork et exécute la commande via execve
- * @cmd_path: chemin complet de la commande
- * @args: tableau d'arguments
- * @prog_name: nom du programme pour les erreurs
- */
-
-void launch_process(char *cmd_path, char **args, char *prog_name)
-{
-	pid_t pid;
-	int status;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		perror(prog_name);
-		return;
-	}
-
-	if (pid == 0)
-	{
-		execve(cmd_path, args, environ);
-		perror(prog_name);
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		wait(&status);
-	}
-}
