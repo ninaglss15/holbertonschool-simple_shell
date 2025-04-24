@@ -124,6 +124,8 @@ julien@ubuntu:/#
 ## Man Page :
 
 ```man
+SIMPLE_SHELL(1)                       Holberton Simple Shell                      SIMPLE_SHELL(1)
+
 NAME
        simple_shell - simple UNIX command interpreter
 
@@ -146,56 +148,6 @@ USAGE
        - Interactive mode: Displays a prompt and waits for user input.
 
        - Non-interactive mode: Reads commands from a file or standard input.
-NAME
-       simple_shell - simple UNIX command interpreter
-
-SYNOPSIS
-       ./hsh
-
-DESCRIPTION
-       A  minimal shell written in C. It reads user input, parses it, and executes commands using
-       the PATH.  It supports both interactive and non-interactive modes.
-
-BUILTINS
-       exit   Exit the shell. If called with an optional numeric argument, it returns that  value
-              as the exit status.
-
-       env    Display the current environment variables.
-
-USAGE
-       The shell supports:
-
-       - Interactive mode: Displays a prompt and waits for user input.
-
-       - Non-interactive mode: Reads commands from a file or standard input.
-
-EXAMPLES
-       Interactive mode:
-       $ ./simple_shell
-       #cisfun$ ls -l
-       total 8
-       -rw-r--r-- 1 user user 1234 Apr 24 2025 file1
-       -rw-r--r-- 1 user user 5678 Apr 24 2025 file2
-       #cisfun$ exit
-       $
-
-       Non-interactive mode:
-       $ echo "ls -l" | ./simple_shell
-       total 8
-       -rw-r--r-- 1 user user 1234 Apr 24 2025 file1
-       -rw-r--r-- 1 user user 5678 Apr 24 2025 file2
-       $
-
-RETURN VALUE
-       simple_shell returns 0 on success, or an error code if a failure occurs.
-
-BUGS
-       No known bugs at this time.
-
-AUTHOR
-       Ninaglss and Mylliah
-
-1.0                                       21 avril 2025                           SIMPLE_SHELL(1)
 
 EXAMPLES
        Interactive mode:
