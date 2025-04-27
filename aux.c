@@ -28,14 +28,25 @@ int is_empty(const char *str)
 */
 void trim_spaces(char *str)
 {
+	char *start = str;
 	char *end;
 
-	while (*str == ' ' || *str == '\t'
-			|| *str == '\n' || *str == '\r')
-		str++;
+	while (*start == ' ' || *start == '\t' ||
+		   *start == '\n' || *start == '\r')
+		start++;
 
-	end = str + strlen(str) - 1;
-	while (end > str && (*end == ' ' || *end == '\t'
+	if (*start == '\0')
+	{
+		*str = '\0';
+		return;
+	}
+
+	end = start + strlen(start) - 1;
+	while (end > start && (*end == ' ' || *end == '\t'
 			|| *end == '\n' || *end == '\r'))
 		*end-- = '\0';
+
+	while (*start)
+		*str++ = *start++;
+	*str = '\0';
 }

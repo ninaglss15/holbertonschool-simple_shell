@@ -21,13 +21,6 @@ int main(int argc, char **argv)
 		if (line == NULL) /* si read retourne NULL = Ctrl + D */
 			break; /* arrêt du shell proprement */
 
-		trim_spaces(line);
-		if (line[0] == '\0')
-		{
-			free(line);
-			continue;
-		}
-
 		if (!is_empty(line))
 			execute_command(line, argv[0]); /* exécute cmd */
 

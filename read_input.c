@@ -20,6 +20,13 @@ char *read_input(void)
 		free(line);
 		return (NULL); /* retrourne NULL pour break shell */
 	}
+
+	trim_spaces(line);
+	if (line[0] == '\0')
+	{
+		free(line);
+		return (NULL);
+	}
 	/* boucle nettoie espaces blancs en FIN de ligne */
 	while (nread > 0 && (line[nread - 1] == '\n' || line[nread - 1] == ' '
 			|| line[nread - 1] == '\t' || line[nread - 1] == '\r'))
