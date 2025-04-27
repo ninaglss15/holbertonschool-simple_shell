@@ -24,5 +24,6 @@ void free_tokens(char **tokens);
 void execute_in_child(char **args, char *prog_name);
 char *find_command_path(const char *cmd);
 int handle_builtin(char **args, char *line);
+void trim_spaces(char *str);
 
 #endif
