@@ -26,6 +26,7 @@ int handle_builtin(char **args, char *line)
 	{
 		for (i = 0; environ[i] != NULL; i++)
 			printf("%s\n", environ[i]); /* affiche var d'env ligne par ligne */
+		free_tokens(args);
 		return (1); /* cmd bultin a été gérée */
 	}
 
