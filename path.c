@@ -1,32 +1,37 @@
 #include "shell.h"
 
 /**
- * find_command_path - cherche le chemin complet d'une commande dans le PATH
- * @cmd: commande à rechercher
- *
- * Description: cherche le chemin complet d'une cmd
- * Return: chemin complet si trouvé NULL sinon (à libérer)
- */
-char *find_command_path(const char *cmd)
-{ /* contient contenu var d'env $PATH ; copie modifiable de PATH */
-	char *path, *path_copy, *dir; /* rep courant extrait de $PATH */
-	char *full_path; /* stockage chemin complet */
-	struct stat st; /* pour savoir si fichier existe */
-	int len; /* len nécessaire pour alloc full_path */
-	int i;
+* is_direct_path - check if a command is a direct path
+* @cmd: order to check
+*
+* Return: file path if found, NULL otherwise
+*/
+char *is_direct_path(const char *cmd)
+{
+	struct stat st;
 
-	if (!cmd || cmd[0] == '\0') /* vérif si pas vide */
-		return (NULL);
-
-	if (strchr(cmd, '/')) /* vérifi si chemin contient / déjà chemin ? */
+	if (strchr(cmd, '/')) /* vérifie si cmd contient '/' */
 	{
-		if (stat(cmd, &st) == 0) /* si existe */
-			return (strdup(cmd)); /* retourne copie */
+		if (stat(cmd, &st) == 0) /* si le fichier existe */
+			return (strdup(cmd)); /* retourne une copie du chemin */
 		else
 			return (NULL);
 	}
+	return (NULL);
+}
 
-	for (i = 0 ; environ[i] ; i++)
+/**
+* get_path_env - retrieves the PATH variable from the environment
+*
+* Return: copy of the PATH variable or NULL if not found
+*/
+char *get_path_env(void)
+{
+	int i;
+
+	char *path = NULL;
+
+	for (i = 0; environ[i]; i++)
 	{
 		if (strncmp(environ[i], "PATH=", 5) == 0)
 		{
@@ -34,35 +39,68 @@ char *find_command_path(const char *cmd)
 			break;
 		}
 	}
-	if (!path) /* vérif pas vide */
-		return (NULL);
+	return (path ? strdup(path) : NULL); /* retourne une copie de PATH */
+}
 
-	path_copy = strdup(path); /* duplique car strtok modifie chaîne */
-	if (!path_copy) /* vérif pas vide */
-		return (NULL);
+/**
+* search_in_path - searches for a command in the PATH directories
+* @cmd: command to search
+* @path_copy: copy the PATH variable
+*
+* Return: full path if found, NULL otherwise
+*/
+char *search_in_path(const char *cmd, char *path_copy)
+{
+	char *dir, *full_path;
 
-	dir = strtok(path_copy, ":"); /* on découpe en morceaux selon séparateur */
-	while (dir) /* calcule len pour concaténer */
+	struct stat st;
+	int len;
+
+	dir = strtok(path_copy, ":"); /* découpe PATH en répertoires */
+	while (dir)
 	{
-		len = strlen(dir) + strlen(cmd) + 2; /* len dir + / + cmd + \0 */
-		full_path = malloc(len); /* alloc memoire dynamiquement */
-		if (!full_path) /* vérif si échec */
-		{
-			free(path_copy);
+		len = strlen(dir) + strlen(cmd) + 2; /* longueur pour concaténation */
+		full_path = malloc(len); /* allocation mémoire */
+		if (!full_path)
 			return (NULL);
-		}
-		sprintf(full_path, "%s/%s", dir, cmd); /* construction chaîne */
 
-		if (stat(full_path, &st) == 0) /* si chem corresp à fichier existant */
-		{
-			free(path_copy); /* libère car plus besoin */
-			return (full_path); /* retourne ce chemin */
-		}
+		sprintf(full_path, "%s/%s", dir, cmd); /* construit le chemin complet */
+		if (stat(full_path, &st) == 0) /* vérifie si le fichier existe */
+			return (full_path); /* retourne le chemin trouvé */
 
-		free(full_path); /* sinon, si fichier n'existe pas, libère qd même */
-		dir = strtok(NULL, ":"); /* NULL pour continuer, next dir ds le PATH */
+		free(full_path); /* libère si le fichier n'existe pas */
+		dir = strtok(NULL, ":"); /* passe au répertoire suivant */
 	}
+	return (NULL);
+}
 
-	free(path_copy); /* sinon, si aucun chem corresp, libère qd même */
-	return (NULL); /* renvoie NULL */
+/**
+* find_command_path - searches for the full path of a command in the PATH
+* @cmd: command to search
+*
+* Return: full path if found, NULL otherwise
+*/
+char *find_command_path(const char *cmd)
+{
+	char *path, *path_copy, *result;
+
+	if (!cmd || cmd[0] == '\0') /* vérifie si cmd est vide */
+		return (NULL);
+
+	result = is_direct_path(cmd); /* vérifie si cmd est un chemin direct */
+	if (result)
+		return (result);
+
+	path = get_path_env(); /* récupère la variable PATH */
+	if (!path)
+		return (NULL);
+
+	path_copy = strdup(path); /* copie PATH pour le modifier */
+	free(path); /* libère la copie originale */
+	if (!path_copy)
+		return (NULL);
+
+	result = search_in_path(cmd, path_copy); /* cherche dans les répertoires */
+	free(path_copy); /* libère la copie modifiée */
+	return (result); /* retourne le chemin trouvé ou NULL */
 }
