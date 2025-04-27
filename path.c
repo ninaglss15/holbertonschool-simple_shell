@@ -13,6 +13,7 @@ char *find_command_path(const char *cmd)
 	char *full_path; /* stockage chemin complet */
 	struct stat st; /* pour savoir si fichier existe */
 	int len; /* len nécessaire pour alloc full_path */
+	int i;
 
 	if (!cmd || cmd[0] == '\0') /* vérif si pas vide */
 		return (NULL);
@@ -25,7 +26,14 @@ char *find_command_path(const char *cmd)
 			return (NULL);
 	}
 
-	path = getenv("PATH"); /* récup var d'env*/
+	for (i = 0 ; environ[i] ; i++)
+	{
+		if (strncmp(environ[i], "PATH=", 5) == 0)
+		{
+			path = environ[i] + 5;
+			break;
+		}
+	}
 	if (!path) /* vérif pas vide */
 		return (NULL);
 
